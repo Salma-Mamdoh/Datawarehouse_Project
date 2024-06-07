@@ -8,7 +8,6 @@
 <body>
   <div class="container">
     <h1>Table of Contents</h1>
-    <h2>Overview of the Northwind Database</h2>
     <ul>
       <li><a href="#northwind-schema">Northwind Database Schema</a></li>
       <li><a href="#KPIs">KPIs</a></li>
