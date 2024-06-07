@@ -1,0 +1,3010 @@
+﻿<?xml version="1.0"?>
+<DTS:Executable xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:refId="Package"
+  DTS:CreationDate="5/13/2024 4:38:17 PM"
+  DTS:CreationName="Microsoft.Package"
+  DTS:CreatorComputerName="EJS"
+  DTS:CreatorName="EJS\E.J.S"
+  DTS:DTSID="{5BE7C111-1F68-447B-B8A3-9337B8D41CBB}"
+  DTS:ExecutableType="Microsoft.Package"
+  DTS:LastModifiedProductVersion="16.0.5397.1"
+  DTS:LocaleID="1033"
+  DTS:ObjectName="Package1"
+  DTS:PackageType="5"
+  DTS:VersionBuild="40"
+  DTS:VersionGUID="{1ED0B18C-05D5-45C7-A335-6E397D5EA6BD}">
+  <DTS:Property
+    DTS:Name="PackageFormatVersion">8</DTS:Property>
+  <DTS:ConnectionManagers>
+    <DTS:ConnectionManager
+      DTS:refId="Package.ConnectionManagers[EJS.Northwind]"
+      DTS:CreationName="OLEDB"
+      DTS:DTSID="{1832CEF5-3C17-425F-B2D5-3F8AAC7F94F3}"
+      DTS:ObjectName="EJS.Northwind">
+      <DTS:ObjectData>
+        <DTS:ConnectionManager
+          DTS:ConnectRetryCount="1"
+          DTS:ConnectRetryInterval="5"
+          DTS:ConnectionString="Data Source=EJS;Initial Catalog=Northwind;Provider=SQLOLEDB.1;Integrated Security=SSPI;Application Name=SSIS-Package1-{1832CEF5-3C17-425F-B2D5-3F8AAC7F94F3}EJS.Northwind;Auto Translate=False;" />
+      </DTS:ObjectData>
+    </DTS:ConnectionManager>
+  </DTS:ConnectionManagers>
+  <DTS:Variables>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{424BB384-1DF0-4D18-BAAA-247D282BCB2B}"
+      DTS:IncludeInDebugDump="6789"
+      DTS:Namespace="User"
+      DTS:ObjectName="last_extract_date">
+      <DTS:VariableValue
+        DTS:DataType="7">1/1/1950 4:49:57 PM</DTS:VariableValue>
+    </DTS:Variable>
+    <DTS:Variable
+      DTS:CreationName=""
+      DTS:DTSID="{063A22F0-37CE-4112-95AA-DC799BBA00CD}"
+      DTS:EvaluateAsExpression="True"
+      DTS:Expression="&quot;SELECT * FROM Orders WHERE update_date &gt; '&quot; + (DT_WSTR,50) @[User::last_extract_date]  + &quot;';&quot;"
+      DTS:IncludeInDebugDump="2345"
+      DTS:Namespace="User"
+      DTS:ObjectName="SQL_SELECT_STATEMENT">
+      <DTS:VariableValue
+        DTS:DataType="8">SELECT * FROM Orders WHERE update_date &gt; '1/1/1950 4:49:57 PM';</DTS:VariableValue>
+    </DTS:Variable>
+  </DTS:Variables>
+  <DTS:Executables>
+    <DTS:Executable
+      DTS:refId="Package\Get Last Extraction Date"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{b1312330-6154-46dc-9597-66911fcea7a1}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Get Last Extraction Date"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{1832CEF5-3C17-425F-B2D5-3F8AAC7F94F3}"
+          SQLTask:SqlStatementSource="SELECT last_extract_date&#xA;FROM     STG.Conf_Table&#xA;WHERE  (table_name = 'Shipper_Info')"
+          SQLTask:ResultType="ResultSetType_SingleRow" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask">
+          <SQLTask:ResultBinding
+            SQLTask:ResultName="0"
+            SQLTask:DtsVariableName="User::last_extract_date" />
+        </SQLTask:SqlTaskData>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load data into Shipper Fact"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{0cc1dd09-ec21-4345-9869-de3d6455818f}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load data into Shipper Fact"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\load data into Shipper Fact\Date Key Lookup"
+              componentClassID="Microsoft.Lookup"
+              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+              name="Date Key Lookup"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement that generates the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from [DWH].[D_Date]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommandParam"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (select * from [DWH].[D_Date]) [refTable]
+where [refTable].[Date] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of connection used to access the reference dataset."
+                  name="ConnectionType"
+                  typeConverter="LookupConnectionType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the cache type of the lookup table."
+                  name="CacheType"
+                  typeConverter="CacheType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                  name="NoMatchBehavior"
+                  typeConverter="LookupNoMatchBehavior">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                  name="NoMatchCachePercentage">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                  name="MaxMemoryUsage">25</property>
+                <property
+                  dataType="System.Int64"
+                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                  name="MaxMemoryUsage64">25</property>
+                <property
+                  dataType="System.String"
+                  description="Indicates whether to reference metadata in an XML format."
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="DateKey" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Date" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Day" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DaySuffix" dataType="DT_STR" length="2" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="Weekday" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="WeekDayName" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="WeekDayName_Short" dataType="DT_STR" length="3" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="WeekDayName_FirstLetter" dataType="DT_STR" length="1" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="DOWInMonth" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="DayOfYear" dataType="DT_I2" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="WeekOfMonth" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="WeekOfYear" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Month" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MonthName" dataType="DT_STR" length="10" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MonthName_Short" dataType="DT_STR" length="3" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MonthName_FirstLetter" dataType="DT_STR" length="1" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="Quarter" dataType="DT_UI1" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="QuarterName" dataType="DT_STR" length="6" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="Year" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="MMYYYY" dataType="DT_STR" length="6" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="MonthYear" dataType="DT_STR" length="7" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="IsWeekend" dataType="DT_BOOL" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="IsHoliday" dataType="DT_BOOL" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="HolidayName" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="SpecialDays" dataType="DT_STR" length="20" precision="0" scale="0" codePage="1252"/&gt;&lt;referenceColumn name="FinancialYear" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="FinancialQuater" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="FinancialMonth" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="FirstDateofYear" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LastDateofYear" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="FirstDateofQuater" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LastDateofQuater" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="FirstDateofMonth" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LastDateofMonth" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="FirstDateofWeek" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="LastDateofWeek" dataType="DT_WSTR" length="10" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CurrentYear" dataType="DT_I2" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CurrentQuater" dataType="DT_I2" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CurrentMonth" dataType="DT_I2" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CurrentWeek" dataType="DT_I2" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="CurrentDay" dataType="DT_I2" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                <property
+                  containsID="true"
+                  dataType="System.String"
+                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                  name="ParameterMap">#{Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Output].Columns[date]};</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into Shipper Fact\Date Key Lookup.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="Connection manager used to access lookup data."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\load data into Shipper Fact\Date Key Lookup.Inputs[Lookup Input]"
+                  name="Lookup Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\Date Key Lookup.Inputs[Lookup Input].Columns[date]"
+                      cachedDataType="wstr"
+                      cachedLength="10"
+                      cachedName="date"
+                      lineageId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Output].Columns[date]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">Date</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Match Output]"
+                  errorOrTruncationOperation="Lookup"
+                  exclusionGroup="1"
+                  name="Lookup Match Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Date Key Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Match Output].Columns[DateKey]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Copy Column"
+                      lineageId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Match Output].Columns[DateKey]"
+                      name="DateKey"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn">DateKey</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup No Match Output]"
+                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                  exclusionGroup="1"
+                  name="Lookup No Match Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Date Key Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Lookup Error Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Date Key Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into Shipper Fact\Derived Column"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Derived Column"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\load data into Shipper Fact\Derived Column.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\Derived Column.Inputs[Derived Column Input].Columns[create_timestamp]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="create_timestamp"
+                      lineageId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output].Columns[create_timestamp]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Output].Columns[date]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      length="10"
+                      lineageId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Output].Columns[date]"
+                      name="date"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">(DT_WSTR,10)(DT_DBDATE)#{Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output].Columns[create_timestamp]}</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">(DT_WSTR,10)(DT_DBDATE)[Prepare New Columns].create_timestamp</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Derived Column.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into Shipper Fact\load into fact Shipper"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="load into fact Shipper"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[DWH].[F_Shipper]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions">TABLOCK,CHECK_CONSTRAINTS</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into Shipper Fact\load into fact Shipper.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[NumberOfOrders]"
+                      cachedDataType="i4"
+                      cachedName="NumberOfOrders"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[NumberOfOrders]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[NumberOfOrders]" />
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[AvgShipmentCost]"
+                      cachedDataType="r4"
+                      cachedName="AvgShipmentCost"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentCost]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[AvgShipmentCost]" />
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[LocationID]"
+                      cachedDataType="i4"
+                      cachedName="LocationID"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[LocationID]"
+                      lineageId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Match Output].Columns[LocationID]" />
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[Shipper_Key]"
+                      cachedDataType="i4"
+                      cachedName="Shipper_Key"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[Shipper_Key]"
+                      lineageId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Match Output].Columns[Shipper_Key]" />
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[DateKey]"
+                      cachedDataType="i4"
+                      cachedName="DateKey"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[DateKey]"
+                      lineageId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Match Output].Columns[DateKey]" />
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[AvgShipmentTime_in_days]"
+                      cachedDataType="r4"
+                      cachedName="AvgShipmentTime_in_days"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentTime]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[AvgShipmentTime_in_days]" />
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].Columns[create_timestamp]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="create_timestamp"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[CreateTimestamp]"
+                      lineageId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output].Columns[create_timestamp]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[Shipper_Info_Key]"
+                      dataType="i4"
+                      name="Shipper_Info_Key" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[DateKey]"
+                      dataType="i4"
+                      name="DateKey" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[Shipper_Key]"
+                      dataType="i4"
+                      name="Shipper_Key" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[LocationID]"
+                      dataType="i4"
+                      name="LocationID" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[NumberOfOrders]"
+                      dataType="i4"
+                      name="NumberOfOrders" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentCost]"
+                      dataType="r4"
+                      name="AvgShipmentCost" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[CreateTimestamp]"
+                      dataType="dbTimeStamp"
+                      name="CreateTimestamp" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentTime]"
+                      dataType="r4"
+                      name="AvgShipmentTime" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\load into fact Shipper.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\load into fact Shipper.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\load into fact Shipper.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\load into fact Shipper.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into Shipper Fact\Location Key Lookup"
+              componentClassID="Microsoft.Lookup"
+              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+              name="Location Key Lookup"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement that generates the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT LocationID, City, Country
+FROM     DWH.D_Location</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommandParam"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT LocationID, City, Country
+FROM     DWH.D_Location) [refTable]
+where [refTable].[City] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of connection used to access the reference dataset."
+                  name="ConnectionType"
+                  typeConverter="LookupConnectionType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the cache type of the lookup table."
+                  name="CacheType"
+                  typeConverter="CacheType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                  name="NoMatchBehavior"
+                  typeConverter="LookupNoMatchBehavior">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                  name="NoMatchCachePercentage">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                  name="MaxMemoryUsage">25</property>
+                <property
+                  dataType="System.Int64"
+                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                  name="MaxMemoryUsage64">25</property>
+                <property
+                  dataType="System.String"
+                  description="Indicates whether to reference metadata in an XML format."
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="LocationID" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="City" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="Country" dataType="DT_WSTR" length="50" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                <property
+                  containsID="true"
+                  dataType="System.String"
+                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                  name="ParameterMap">#{Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[City]};</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into Shipper Fact\Location Key Lookup.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="Connection manager used to access lookup data."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\load data into Shipper Fact\Location Key Lookup.Inputs[Lookup Input]"
+                  name="Lookup Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\Location Key Lookup.Inputs[Lookup Input].Columns[City]"
+                      cachedDataType="wstr"
+                      cachedLength="50"
+                      cachedName="City"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[City]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">City</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Match Output]"
+                  errorOrTruncationOperation="Lookup"
+                  exclusionGroup="1"
+                  name="Lookup Match Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Location Key Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Match Output].Columns[LocationID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Copy Column"
+                      lineageId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Match Output].Columns[LocationID]"
+                      name="LocationID"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn">LocationID</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup No Match Output]"
+                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                  exclusionGroup="1"
+                  name="Lookup No Match Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Location Key Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Lookup Error Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Location Key Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into Shipper Fact\Prepare New Columns"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Prepare New Columns"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\load data into Shipper Fact\Prepare New Columns.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Prepare New Columns.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output].Columns[create_timestamp]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output].Columns[create_timestamp]"
+                      name="create_timestamp"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">GETDATE()</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Prepare New Columns.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into Shipper Fact\Shipper Key Lookup"
+              componentClassID="Microsoft.Lookup"
+              contactInfo="Lookup;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;6"
+              description="Joins additional columns to the data flow by looking up values in a table. For example, join to the 'employee id' column the employees table to get 'hire date' and 'employee name'. We recommend this transformation when the lookup table can fit into memory."
+              name="Shipper Key Lookup"
+              usesDispositions="true"
+              version="6">
+              <properties>
+                <property
+                  dataType="System.String"
+                  description="Specifies the SQL statement that generates the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">SELECT Shipper_Key, ShipperID
+FROM     DWH.D_Shipper</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies a SQL statement that uses parameters to generate the lookup table."
+                  expressionType="Notify"
+                  name="SqlCommandParam"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor">select * from (SELECT Shipper_Key, ShipperID
+FROM     DWH.D_Shipper) [refTable]
+where [refTable].[ShipperID] = ?</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the type of connection used to access the reference dataset."
+                  name="ConnectionType"
+                  typeConverter="LookupConnectionType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the cache type of the lookup table."
+                  name="CacheType"
+                  typeConverter="CacheType">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies how the Lookup transformation handles rows without matching entries in the reference data set."
+                  name="NoMatchBehavior"
+                  typeConverter="LookupNoMatchBehavior">1</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage of the cache that is allocated for rows with no matching entries in the reference dataset."
+                  name="NoMatchCachePercentage">0</property>
+                <property
+                  dataType="System.Int32"
+                  description="Maximum Memory Usage for Reference Cache on a 32 bit platform."
+                  name="MaxMemoryUsage">25</property>
+                <property
+                  dataType="System.Int64"
+                  description="Maximum Memory Usage for Reference Cache on a 64 bit platform."
+                  name="MaxMemoryUsage64">25</property>
+                <property
+                  dataType="System.String"
+                  description="Indicates whether to reference metadata in an XML format."
+                  name="ReferenceMetadataXml">&lt;referenceMetadata&gt;&lt;referenceColumns&gt;&lt;referenceColumn name="Shipper_Key" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;referenceColumn name="ShipperID" dataType="DT_I4" length="0" precision="0" scale="0" codePage="0"/&gt;&lt;/referenceColumns&gt;&lt;/referenceMetadata&gt;</property>
+                <property
+                  containsID="true"
+                  dataType="System.String"
+                  description="Specifies the list of lineage identifiers that map to the parameters that the SQL statement in the SQLCommand property uses. Entries in the list are separated by semicolons."
+                  name="ParameterMap">#{Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[shipper_Key]};</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Determines whether duplicate keys in the reference data should be treated as errors when full cache mode is used."
+                  name="TreatDuplicateKeysAsError">false</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into Shipper Fact\Shipper Key Lookup.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="Connection manager used to access lookup data."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\load data into Shipper Fact\Shipper Key Lookup.Inputs[Lookup Input]"
+                  name="Lookup Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into Shipper Fact\Shipper Key Lookup.Inputs[Lookup Input].Columns[shipper_Key]"
+                      cachedDataType="i4"
+                      cachedName="shipper_Key"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[shipper_Key]">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table that a column joins."
+                          name="JoinToReferenceColumn">ShipperID</property>
+                        <property
+                          dataType="System.Null"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn" />
+                      </properties>
+                    </inputColumn>
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Match Output]"
+                  errorOrTruncationOperation="Lookup"
+                  exclusionGroup="1"
+                  name="Lookup Match Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Shipper Key Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Match Output].Columns[Shipper_Key]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Copy Column"
+                      lineageId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Match Output].Columns[Shipper_Key]"
+                      name="Shipper_Key"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          dataType="System.String"
+                          description="Specifies the column in the reference table from which a column is copied."
+                          name="CopyFromReferenceColumn">Shipper_Key</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup No Match Output]"
+                  description="The Lookup output that handles rows with no matching entries in the reference dataset. Use this output when the NoMatchBehavior property is set to &quot;Send rows with no matching entries to the no match output.&quot;"
+                  exclusionGroup="1"
+                  name="Lookup No Match Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Shipper Key Lookup.Inputs[Lookup Input]">
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Lookup Error Output"
+                  synchronousInputId="Package\load data into Shipper Fact\Shipper Key Lookup.Inputs[Lookup Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into Shipper Fact\STG Shipper Info Source"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="STG Shipper Info Source"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[STG].[Shipper_Info]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1256</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into Shipper Fact\STG Shipper Info Source.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[src_update_date]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[src_update_date]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[src_update_date]"
+                      name="src_update_date"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[create_timestamp]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[create_timestamp]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[create_timestamp]"
+                      name="create_timestamp"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[Shipper_Info_ID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[Shipper_Info_ID]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[Shipper_Info_ID]"
+                      name="Shipper_Info_ID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[shipper_Key]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[shipper_Key]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[shipper_Key]"
+                      name="shipper_Key"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[City]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[City]"
+                      length="50"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[City]"
+                      name="City"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[NumberOfOrders]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[NumberOfOrders]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[NumberOfOrders]"
+                      name="NumberOfOrders"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[AvgShipmentCost]"
+                      dataType="r4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[AvgShipmentCost]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[AvgShipmentCost]"
+                      name="AvgShipmentCost"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[AvgShipmentTime_in_days]"
+                      dataType="r4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[AvgShipmentTime_in_days]"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].Columns[AvgShipmentTime_in_days]"
+                      name="AvgShipmentTime_in_days"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[src_update_date]"
+                      dataType="dbTimeStamp"
+                      name="src_update_date" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[create_timestamp]"
+                      dataType="dbTimeStamp"
+                      name="create_timestamp" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[Shipper_Info_ID]"
+                      dataType="i4"
+                      name="Shipper_Info_ID" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[shipper_Key]"
+                      dataType="i4"
+                      name="shipper_Key" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[City]"
+                      dataType="wstr"
+                      length="50"
+                      name="City" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[NumberOfOrders]"
+                      dataType="i4"
+                      name="NumberOfOrders" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[AvgShipmentCost]"
+                      dataType="r4"
+                      name="AvgShipmentCost" />
+                    <externalMetadataColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output].ExternalColumns[AvgShipmentTime_in_days]"
+                      dataType="r4"
+                      name="AvgShipmentTime_in_days" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[Shipper_Info_ID]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[Shipper_Info_ID]"
+                      name="Shipper_Info_ID" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[shipper_Key]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[shipper_Key]"
+                      name="shipper_Key" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[City]"
+                      dataType="wstr"
+                      length="50"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[City]"
+                      name="City" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[NumberOfOrders]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[NumberOfOrders]"
+                      name="NumberOfOrders" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[AvgShipmentTime_in_days]"
+                      dataType="r4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[AvgShipmentTime_in_days]"
+                      name="AvgShipmentTime_in_days" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[AvgShipmentCost]"
+                      dataType="r4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[AvgShipmentCost]"
+                      name="AvgShipmentCost" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[src_update_date]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[src_update_date]"
+                      name="src_update_date" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[create_timestamp]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[create_timestamp]"
+                      name="create_timestamp" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\load data into Shipper Fact.Paths[Derived Column Output]"
+              endId="Package\load data into Shipper Fact\Location Key Lookup.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\load data into Shipper Fact\Prepare New Columns.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\load data into Shipper Fact.Paths[Derived Column Output1]"
+              endId="Package\load data into Shipper Fact\Date Key Lookup.Inputs[Lookup Input]"
+              name="Derived Column Output"
+              startId="Package\load data into Shipper Fact\Derived Column.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\load data into Shipper Fact.Paths[Lookup Match Output]"
+              endId="Package\load data into Shipper Fact\Shipper Key Lookup.Inputs[Lookup Input]"
+              name="Lookup Match Output"
+              startId="Package\load data into Shipper Fact\Location Key Lookup.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\load data into Shipper Fact.Paths[Lookup Match Output1]"
+              endId="Package\load data into Shipper Fact\Derived Column.Inputs[Derived Column Input]"
+              name="Lookup Match Output"
+              startId="Package\load data into Shipper Fact\Shipper Key Lookup.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\load data into Shipper Fact.Paths[Lookup Match Output2]"
+              endId="Package\load data into Shipper Fact\load into fact Shipper.Inputs[OLE DB Destination Input]"
+              name="Lookup Match Output"
+              startId="Package\load data into Shipper Fact\Date Key Lookup.Outputs[Lookup Match Output]" />
+            <path
+              refId="Package\load data into Shipper Fact.Paths[OLE DB Source Output]"
+              endId="Package\load data into Shipper Fact\Prepare New Columns.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\load data into Shipper Fact\STG Shipper Info Source.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\load data into STG Shipper Info"
+      DTS:CreationName="Microsoft.Pipeline"
+      DTS:Description="Data Flow Task"
+      DTS:DTSID="{34c28a2f-fdd7-4f0d-978c-8acf318da9e6}"
+      DTS:ExecutableType="Microsoft.Pipeline"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="load data into STG Shipper Info"
+      DTS:TaskContact="Performs high-performance data extraction, transformation and loading;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <pipeline
+          version="1">
+          <components>
+            <component
+              refId="Package\load data into STG Shipper Info\Aggregate"
+              componentClassID="Microsoft.Aggregate"
+              contactInfo="Aggregate;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;3"
+              description="Aggregates data with functions such as Average, Sum, Count, Max, and Min. For example, group data to compute the sum of sales per product or the average visits per day."
+              name="Aggregate"
+              version="3">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                  name="KeyScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                  name="Keys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the approximate number of distinct values in a column that the aggregation counts distinctly. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no CountDistinctScale value is used."
+                  name="CountDistinctScale"
+                  typeConverter="KeyScaleType">0</property>
+                <property
+                  dataType="System.Null"
+                  description="Specifies the exact number of distinct values in a column that the aggregation counts distinctly. If a CountDistinctScale value is specified, the value in CountDistinctKeys takes precedence."
+                  name="CountDistinctKeys" />
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the percentage by which memory can be extended during the aggregation. Valid values are between 1 and 100."
+                  name="AutoExtendFactor">25</property>
+              </properties>
+              <inputs>
+                <input
+                  refId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1]"
+                  name="Aggregate Input 1">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1].Columns[ShipVia]"
+                      cachedDataType="i4"
+                      cachedName="ShipVia"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipVia]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1].Columns[Freight]"
+                      cachedDataType="cy"
+                      cachedName="Freight"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Freight]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1].Columns[ShipCity]"
+                      cachedDataType="wstr"
+                      cachedLength="15"
+                      cachedName="ShipCity"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipCity]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1].Columns[Shippment_Time]"
+                      cachedDataType="i4"
+                      cachedName="Shippment_Time"
+                      lineageId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Output].Columns[Shippment_Time]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1].Columns[OrderID]"
+                      cachedDataType="i4"
+                      cachedName="OrderID"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[OrderID]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1]"
+                  name="Aggregate Output 1">
+                  <properties>
+                    <property
+                      dataType="System.Int32"
+                      description="Specifies the approximate number of group by keys that the aggregation produces. Low indicates 500,000 key values, Medium indicates 5 million key values, and High indicates more than 25 million key values. Unspecified indicates no KeyScale value is used."
+                      name="KeyScale"
+                      typeConverter="KeyScaleType">0</property>
+                    <property
+                      dataType="System.Null"
+                      description="Specifies the exact number of group by keys that the aggregation produces. If a KeyScale value is specified, the value in Keys takes precedence."
+                      name="Keys" />
+                  </properties>
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[ShipVia]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[ShipVia]"
+                      name="ShipVia">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipVia]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Freight]"
+                      dataType="cy"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Freight]"
+                      name="Freight">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Freight]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">5</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[ShipCity]"
+                      dataType="wstr"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[ShipCity]"
+                      name="ShipCity">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipCity]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">0</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Shippment_Time]"
+                      dataType="r8"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Shippment_Time]"
+                      name="Shippment_Time">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Output].Columns[Shippment_Time]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">5</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Num_0f_Orders]"
+                      dataType="ui8"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Num_0f_Orders]"
+                      name="Num_0f_Orders">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the ID of the input column used in the aggregation."
+                          name="AggregationColumnId">#{Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[OrderID]}</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the type of aggregation."
+                          name="AggregationType"
+                          typeConverter="AggregationType">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Indicates whether the column requires special handling because it may contain oversized data or it requires precision beyond a float data type."
+                          name="IsBig">1</property>
+                        <property
+                          dataType="System.Int32"
+                          description="Specifies the string comparison options."
+                          name="AggregationComparisonFlags">0</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into STG Shipper Info\Data Conversion"
+              componentClassID="Microsoft.DataConvert"
+              contactInfo="Data Conversion;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Data Conversion"
+              name="Data Conversion"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input]"
+                  name="Data Conversion Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input].Columns[Freight]"
+                      cachedDataType="cy"
+                      cachedName="Freight"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Freight]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input].Columns[Shippment_Time]"
+                      cachedDataType="r8"
+                      cachedName="Shippment_Time"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Shippment_Time]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input].Columns[Num_0f_Orders]"
+                      cachedDataType="ui8"
+                      cachedName="Num_0f_Orders"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Num_0f_Orders]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output]"
+                  exclusionGroup="1"
+                  name="Data Conversion Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Freight]"
+                      dataType="r4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Freight]"
+                      name="Copy of Freight"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Freight]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Shippment_Time]"
+                      dataType="r4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Shippment_Time]"
+                      name="Copy of Shippment_Time"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Shippment_Time]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Num_0f_Orders]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output].Columns[Copy of Num_0f_Orders]"
+                      name="Copy of Num_0f_Orders"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.Int32"
+                          description="Specifies the input column used as the source of data for the conversion."
+                          name="SourceInputColumnLineageID">#{Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Num_0f_Orders]}</property>
+                        <property
+                          dataType="System.Boolean"
+                          description="Indicates whether the column uses the faster, locale-neutral parsing routines."
+                          name="FastParse">false</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Data Conversion Error Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into STG Shipper Info\Load into STG Shipper Info"
+              componentClassID="Microsoft.OLEDBDestination"
+              contactInfo="OLE DB Destination;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;4"
+              description="OLE DB Destination"
+              name="Load into STG Shipper Info"
+              usesDispositions="true"
+              version="4">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[STG].[Shipper_Info]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">0</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the values supplied for identity columns will be copied to the destination. If false, values for identity columns will be auto-generated at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepIdentity">false</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Indicates whether the columns containing null will have null inserted in the destination. If false, columns containing null will have their default values inserted at the destination. Applies only if fast load is turned on."
+                  name="FastLoadKeepNulls">false</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies options to be used with fast load.  Applies only if fast load is turned on."
+                  name="FastLoadOptions"></property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies when commits are issued during data insertion.  A value of 0 specifies that one commit will be issued at the end of data insertion.  Applies only if fast load is turned on."
+                  name="FastLoadMaxInsertCommitSize">2147483647</property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <inputs>
+                <input
+                  refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input]"
+                  errorOrTruncationOperation="Insert"
+                  errorRowDisposition="FailComponent"
+                  hasSideEffects="true"
+                  name="OLE DB Destination Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[create_timestamp]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="create_timestamp"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[create_timestamp]"
+                      lineageId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output].Columns[create_timestamp]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[src_update_date]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="src_update_date"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[src_update_date]"
+                      lineageId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output].Columns[src_update_date]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[Freight]"
+                      cachedDataType="cy"
+                      cachedName="Freight"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentCost]"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Freight]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[ShipCity]"
+                      cachedDataType="wstr"
+                      cachedLength="15"
+                      cachedName="ShipCity"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[City]"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[ShipCity]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[ShipVia]"
+                      cachedDataType="i4"
+                      cachedName="ShipVia"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[shipper_Key]"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[ShipVia]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[Num_0f_Orders]"
+                      cachedDataType="ui8"
+                      cachedName="Num_0f_Orders"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[NumberOfOrders]"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Num_0f_Orders]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].Columns[Shippment_Time]"
+                      cachedDataType="r8"
+                      cachedName="Shippment_Time"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentTime_in_days]"
+                      lineageId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1].Columns[Shippment_Time]" />
+                  </inputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[Shipper_Info_ID]"
+                      dataType="i4"
+                      name="Shipper_Info_ID" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[shipper_Key]"
+                      dataType="i4"
+                      name="shipper_Key" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[City]"
+                      dataType="wstr"
+                      length="50"
+                      name="City" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[NumberOfOrders]"
+                      dataType="i4"
+                      name="NumberOfOrders" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentCost]"
+                      dataType="r4"
+                      name="AvgShipmentCost" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[src_update_date]"
+                      dataType="dbTimeStamp"
+                      name="src_update_date" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[create_timestamp]"
+                      dataType="dbTimeStamp"
+                      name="create_timestamp" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input].ExternalColumns[AvgShipmentTime_in_days]"
+                      dataType="r4"
+                      name="AvgShipmentTime_in_days" />
+                  </externalMetadataColumns>
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Outputs[OLE DB Destination Error Output]"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="OLE DB Destination Error Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Outputs[OLE DB Destination Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Outputs[OLE DB Destination Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders"
+              componentClassID="Microsoft.OLEDBSource"
+              contactInfo="OLE DB Source;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;7"
+              description="OLE DB Source"
+              name="Northwind DB Sourrce Orders"
+              usesDispositions="true"
+              version="7">
+              <properties>
+                <property
+                  dataType="System.Int32"
+                  description="The number of seconds before a command times out.  A value of 0 indicates an infinite time-out."
+                  name="CommandTimeout">0</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the name of the database object used to open a rowset."
+                  name="OpenRowset">[dbo].[Orders]</property>
+                <property
+                  dataType="System.String"
+                  description="Specifies the variable that contains the name of the database object used to open a rowset."
+                  name="OpenRowsetVariable"></property>
+                <property
+                  dataType="System.String"
+                  description="The SQL command to be executed."
+                  name="SqlCommand"
+                  UITypeEditor="Microsoft.DataTransformationServices.Controls.ModalMultilineStringEditor"></property>
+                <property
+                  dataType="System.String"
+                  description="The variable that contains the SQL command to be executed."
+                  name="SqlCommandVariable">User::SQL_SELECT_STATEMENT</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the column code page to use when code page information is unavailable from the data source."
+                  name="DefaultCodePage">1252</property>
+                <property
+                  dataType="System.Boolean"
+                  description="Forces the use of the DefaultCodePage property value when describing character data."
+                  name="AlwaysUseDefaultCodePage">false</property>
+                <property
+                  dataType="System.Int32"
+                  description="Specifies the mode used to access the database."
+                  name="AccessMode"
+                  typeConverter="AccessMode">3</property>
+                <property
+                  dataType="System.String"
+                  description="The mappings between the parameters in the SQL command and variables."
+                  name="ParameterMapping"></property>
+              </properties>
+              <connections>
+                <connection
+                  refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Connections[OleDbConnection]"
+                  connectionManagerID="Package.ConnectionManagers[EJS.Northwind]"
+                  connectionManagerRefId="Package.ConnectionManagers[EJS.Northwind]"
+                  description="The OLE DB runtime connection used to access the database."
+                  name="OleDbConnection" />
+              </connections>
+              <outputs>
+                <output
+                  refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output]"
+                  name="OLE DB Source Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[OrderID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[OrderID]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[OrderID]"
+                      name="OrderID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[CustomerID]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[CustomerID]"
+                      length="5"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[CustomerID]"
+                      name="CustomerID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[EmployeeID]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[EmployeeID]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[EmployeeID]"
+                      name="EmployeeID"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[OrderDate]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[OrderDate]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[OrderDate]"
+                      name="OrderDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[RequiredDate]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[RequiredDate]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[RequiredDate]"
+                      name="RequiredDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShippedDate]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShippedDate]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShippedDate]"
+                      name="ShippedDate"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipVia]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipVia]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipVia]"
+                      name="ShipVia"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Freight]"
+                      dataType="cy"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[Freight]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Freight]"
+                      name="Freight"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipName]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipName]"
+                      length="40"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipName]"
+                      name="ShipName"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipAddress]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipAddress]"
+                      length="60"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipAddress]"
+                      name="ShipAddress"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipCity]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipCity]"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipCity]"
+                      name="ShipCity"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipRegion]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipRegion]"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipRegion]"
+                      name="ShipRegion"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipPostalCode]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipPostalCode]"
+                      length="10"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipPostalCode]"
+                      name="ShipPostalCode"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipCountry]"
+                      dataType="wstr"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipCountry]"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShipCountry]"
+                      name="ShipCountry"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[update_date]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[update_date]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[update_date]"
+                      name="update_date"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Total_Order_Price]"
+                      dataType="r4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[Total_Order_Price]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Total_Order_Price]"
+                      name="Total_Order_Price"
+                      truncationRowDisposition="FailComponent" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Total_Order_Revenue]"
+                      dataType="r4"
+                      errorOrTruncationOperation="Conversion"
+                      errorRowDisposition="FailComponent"
+                      externalMetadataColumnId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[Total_Order_Revenue]"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[Total_Order_Revenue]"
+                      name="Total_Order_Revenue"
+                      truncationRowDisposition="FailComponent" />
+                  </outputColumns>
+                  <externalMetadataColumns
+                    isUsed="True">
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[OrderID]"
+                      dataType="i4"
+                      name="OrderID" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[CustomerID]"
+                      dataType="wstr"
+                      length="5"
+                      name="CustomerID" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[EmployeeID]"
+                      dataType="i4"
+                      name="EmployeeID" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[OrderDate]"
+                      dataType="dbTimeStamp"
+                      name="OrderDate" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[RequiredDate]"
+                      dataType="dbTimeStamp"
+                      name="RequiredDate" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShippedDate]"
+                      dataType="dbTimeStamp"
+                      name="ShippedDate" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipVia]"
+                      dataType="i4"
+                      name="ShipVia" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[Freight]"
+                      dataType="cy"
+                      name="Freight" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipName]"
+                      dataType="wstr"
+                      length="40"
+                      name="ShipName" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipAddress]"
+                      dataType="wstr"
+                      length="60"
+                      name="ShipAddress" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipCity]"
+                      dataType="wstr"
+                      length="15"
+                      name="ShipCity" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipRegion]"
+                      dataType="wstr"
+                      length="15"
+                      name="ShipRegion" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipPostalCode]"
+                      dataType="wstr"
+                      length="10"
+                      name="ShipPostalCode" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[ShipCountry]"
+                      dataType="wstr"
+                      length="15"
+                      name="ShipCountry" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[update_date]"
+                      dataType="dbTimeStamp"
+                      name="update_date" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[Total_Order_Price]"
+                      dataType="r4"
+                      name="Total_Order_Price" />
+                    <externalMetadataColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].ExternalColumns[Total_Order_Revenue]"
+                      dataType="r4"
+                      name="Total_Order_Revenue" />
+                  </externalMetadataColumns>
+                </output>
+                <output
+                  refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output]"
+                  isErrorOut="true"
+                  name="OLE DB Source Error Output">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[OrderID]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[OrderID]"
+                      name="OrderID" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[CustomerID]"
+                      dataType="wstr"
+                      length="5"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[CustomerID]"
+                      name="CustomerID" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[EmployeeID]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[EmployeeID]"
+                      name="EmployeeID" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[OrderDate]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[OrderDate]"
+                      name="OrderDate" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[RequiredDate]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[RequiredDate]"
+                      name="RequiredDate" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShippedDate]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShippedDate]"
+                      name="ShippedDate" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipVia]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipVia]"
+                      name="ShipVia" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[Freight]"
+                      dataType="cy"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[Freight]"
+                      name="Freight" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipName]"
+                      dataType="wstr"
+                      length="40"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipName]"
+                      name="ShipName" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipAddress]"
+                      dataType="wstr"
+                      length="60"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipAddress]"
+                      name="ShipAddress" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipCity]"
+                      dataType="wstr"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipCity]"
+                      name="ShipCity" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipRegion]"
+                      dataType="wstr"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipRegion]"
+                      name="ShipRegion" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipPostalCode]"
+                      dataType="wstr"
+                      length="10"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipPostalCode]"
+                      name="ShipPostalCode" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipCountry]"
+                      dataType="wstr"
+                      length="15"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ShipCountry]"
+                      name="ShipCountry" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[update_date]"
+                      dataType="dbTimeStamp"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[update_date]"
+                      name="update_date" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[Total_Order_Price]"
+                      dataType="r4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[Total_Order_Price]"
+                      name="Total_Order_Price" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[Total_Order_Revenue]"
+                      dataType="r4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[Total_Order_Revenue]"
+                      name="Total_Order_Revenue" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into STG Shipper Info\Prepare new Columns"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="Prepare new Columns"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\load data into STG Shipper Info\Prepare new Columns.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\Prepare new Columns.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output].Columns[create_timestamp]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output].Columns[create_timestamp]"
+                      name="create_timestamp"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">GETDATE()</property>
+                      </properties>
+                    </outputColumn>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output].Columns[src_update_date]"
+                      dataType="dbTimeStamp"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output].Columns[src_update_date]"
+                      name="src_update_date"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[GETDATE]()</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">GETDATE()</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\Prepare new Columns.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+            <component
+              refId="Package\load data into STG Shipper Info\To get Shipment Time"
+              componentClassID="Microsoft.DerivedColumn"
+              contactInfo="Derived Column;Microsoft Corporation; Microsoft SQL Server; (C) Microsoft Corporation; All Rights Reserved; http://www.microsoft.com/sql/support;0"
+              description="Creates new column values by applying expressions to transformation input columns. Create new columns or overwrite existing ones. For example, concatenate the values from the 'first name' and 'last name' column to make a 'full name' column."
+              name="To get Shipment Time"
+              usesDispositions="true">
+              <inputs>
+                <input
+                  refId="Package\load data into STG Shipper Info\To get Shipment Time.Inputs[Derived Column Input]"
+                  description="Input to the Derived Column Transformation"
+                  name="Derived Column Input">
+                  <inputColumns>
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\To get Shipment Time.Inputs[Derived Column Input].Columns[RequiredDate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="RequiredDate"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[RequiredDate]" />
+                    <inputColumn
+                      refId="Package\load data into STG Shipper Info\To get Shipment Time.Inputs[Derived Column Input].Columns[ShippedDate]"
+                      cachedDataType="dbTimeStamp"
+                      cachedName="ShippedDate"
+                      lineageId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShippedDate]" />
+                  </inputColumns>
+                  <externalMetadataColumns />
+                </input>
+              </inputs>
+              <outputs>
+                <output
+                  refId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Output]"
+                  description="Default Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  name="Derived Column Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\To get Shipment Time.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Output].Columns[Shippment_Time]"
+                      dataType="i4"
+                      errorOrTruncationOperation="Computation"
+                      errorRowDisposition="FailComponent"
+                      lineageId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Output].Columns[Shippment_Time]"
+                      name="Shippment_Time"
+                      truncationRowDisposition="FailComponent">
+                      <properties>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Expression"
+                          name="Expression">[DATEDIFF]("day",#{Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[ShippedDate]},#{Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output].Columns[RequiredDate]})</property>
+                        <property
+                          containsID="true"
+                          dataType="System.String"
+                          description="Derived Column Friendly Expression"
+                          expressionType="Notify"
+                          name="FriendlyExpression">DATEDIFF("day",ShippedDate,RequiredDate)</property>
+                      </properties>
+                    </outputColumn>
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+                <output
+                  refId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Error Output]"
+                  description="Error Output of the Derived Column Transformation"
+                  exclusionGroup="1"
+                  isErrorOut="true"
+                  name="Derived Column Error Output"
+                  synchronousInputId="Package\load data into STG Shipper Info\To get Shipment Time.Inputs[Derived Column Input]">
+                  <outputColumns>
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Error Output].Columns[ErrorCode]"
+                      name="ErrorCode"
+                      specialFlags="1" />
+                    <outputColumn
+                      refId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      dataType="i4"
+                      lineageId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Error Output].Columns[ErrorColumn]"
+                      name="ErrorColumn"
+                      specialFlags="2" />
+                  </outputColumns>
+                  <externalMetadataColumns />
+                </output>
+              </outputs>
+            </component>
+          </components>
+          <paths>
+            <path
+              refId="Package\load data into STG Shipper Info.Paths[Aggregate Output 1]"
+              endId="Package\load data into STG Shipper Info\Prepare new Columns.Inputs[Derived Column Input]"
+              name="Aggregate Output 1"
+              startId="Package\load data into STG Shipper Info\Aggregate.Outputs[Aggregate Output 1]" />
+            <path
+              refId="Package\load data into STG Shipper Info.Paths[Data Conversion Output]"
+              endId="Package\load data into STG Shipper Info\Load into STG Shipper Info.Inputs[OLE DB Destination Input]"
+              name="Data Conversion Output"
+              startId="Package\load data into STG Shipper Info\Data Conversion.Outputs[Data Conversion Output]" />
+            <path
+              refId="Package\load data into STG Shipper Info.Paths[Derived Column Output]"
+              endId="Package\load data into STG Shipper Info\Aggregate.Inputs[Aggregate Input 1]"
+              name="Derived Column Output"
+              startId="Package\load data into STG Shipper Info\To get Shipment Time.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\load data into STG Shipper Info.Paths[Derived Column Output1]"
+              endId="Package\load data into STG Shipper Info\Data Conversion.Inputs[Data Conversion Input]"
+              name="Derived Column Output"
+              startId="Package\load data into STG Shipper Info\Prepare new Columns.Outputs[Derived Column Output]" />
+            <path
+              refId="Package\load data into STG Shipper Info.Paths[OLE DB Source Output]"
+              endId="Package\load data into STG Shipper Info\To get Shipment Time.Inputs[Derived Column Input]"
+              name="OLE DB Source Output"
+              startId="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders.Outputs[OLE DB Source Output]" />
+          </paths>
+        </pipeline>
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Truncate STG Shipper Info"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{d62edb59-a06f-4165-a8b2-8ffdaa532355}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Truncate STG Shipper Info"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{1832CEF5-3C17-425F-B2D5-3F8AAC7F94F3}"
+          SQLTask:SqlStatementSource="TRUNCATE TABLE STG.Shipper_Info;" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Update Config Table"
+      DTS:CreationName="Microsoft.ExecuteSQLTask"
+      DTS:Description="Execute SQL Task"
+      DTS:DTSID="{c15e9ab6-aaed-4e6a-af02-26994d2c8a22}"
+      DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Update Config Table"
+      DTS:TaskContact="Execute SQL Task; Microsoft Corporation; SQL Server 2022; © 2022 Microsoft Corporation; All Rights Reserved;http://www.microsoft.com/sql/support/default.asp;1"
+      DTS:ThreadHint="0">
+      <DTS:Variables />
+      <DTS:ObjectData>
+        <SQLTask:SqlTaskData
+          SQLTask:Connection="{1832CEF5-3C17-425F-B2D5-3F8AAC7F94F3}"
+          SQLTask:SqlStatementSource="UPDATE STG.Conf_Table&#xA;SET          last_extract_date =&#xA;                      (SELECT CASE WHEN MAX(src_update_date) IS NULL THEN last_extract_date ELSE MAX(src_update_date) END AS Expr1&#xA;                       FROM      STG.Shipper_Info&#xA;                       WHERE   (STG.Conf_Table.table_name = 'Shipper_Info'))" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+      </DTS:ObjectData>
+    </DTS:Executable>
+  </DTS:Executables>
+  <DTS:PrecedenceConstraints>
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint]"
+      DTS:CreationName=""
+      DTS:DTSID="{130c9c58-c34c-4bb7-9529-81fc56a23937}"
+      DTS:From="Package\Truncate STG Shipper Info"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint"
+      DTS:To="Package\Get Last Extraction Date" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 1]"
+      DTS:CreationName=""
+      DTS:DTSID="{294f7b9f-4c79-48da-bf8f-7694a999fe6f}"
+      DTS:From="Package\Get Last Extraction Date"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 1"
+      DTS:To="Package\load data into STG Shipper Info" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 2]"
+      DTS:CreationName=""
+      DTS:DTSID="{35a1ed33-99c7-44c7-9cd6-746ebda66a8d}"
+      DTS:From="Package\load data into STG Shipper Info"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 2"
+      DTS:To="Package\load data into Shipper Fact" />
+    <DTS:PrecedenceConstraint
+      DTS:refId="Package.PrecedenceConstraints[Constraint 3]"
+      DTS:CreationName=""
+      DTS:DTSID="{b3309a85-beea-47b8-957c-8fed971bf531}"
+      DTS:From="Package\load data into Shipper Fact"
+      DTS:LogicalAnd="True"
+      DTS:ObjectName="Constraint 3"
+      DTS:To="Package\Update Config Table" />
+  </DTS:PrecedenceConstraints>
+  <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
+<!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
+<!--If you manually edit this section and make a mistake, you can delete it. -->
+<!--The package will still be able to load normally but the previous layout information will be lost and the designer will automatically re-arrange the elements on the design surface.-->
+<Objects
+  Version="8">
+  <!--Each node below will contain properties that do not affect runtime behavior.-->
+  <Package
+    design-time-name="Package">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="191.2,41.6"
+          Id="Package\Get Last Extraction Date"
+          TopLeft="326.666652096643,154.466666009757" />
+        <NodeLayout
+          Size="202.4,41.6"
+          Id="Package\load data into Shipper Fact"
+          TopLeft="322.499985657632,343.399998029272" />
+        <NodeLayout
+          Size="224,41.6"
+          Id="Package\load data into STG Shipper Info"
+          TopLeft="314.666653052801,252.699998698235" />
+        <NodeLayout
+          Size="202.4,41.6"
+          Id="Package\Truncate STG Shipper Info"
+          TopLeft="321.666652369831,66.9333332851198" />
+        <NodeLayout
+          Size="173.6,41.6"
+          Id="Package\Update Config Table"
+          TopLeft="342.999984838069,435.499998083512" />
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint]"
+          TopLeft="422.566652233237,108.53333328512">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,45.9333327246369"
+              Start="0,0"
+              End="0,38.4333327246369">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,38.4333327246369" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 1]"
+          TopLeft="424.466652574722,196.066666009757">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,56.633332688478"
+              Start="0,0"
+              End="0,49.133332688478">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,49.133332688478" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 2]"
+          TopLeft="425.183319355217,294.299998698235">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,49.0999993310371"
+              Start="0,0"
+              End="0,41.5999993310371">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,41.5999993310371" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package.PrecedenceConstraints[Constraint 3]"
+          TopLeft="426.749985247851,384.999998029272">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,50.50000005424"
+              Start="0,0"
+              End="0,43.00000005424">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,43.00000005424" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </Package>
+  <TaskHost
+    design-time-name="Package\load data into Shipper Fact">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:mssgm="clr-namespace:Microsoft.SqlServer.Graph.Model;assembly=Microsoft.SqlServer.Graph">
+        <NodeLayout
+          Size="183.2,41.6"
+          Id="Package\load data into Shipper Fact\Prepare New Columns"
+          TopLeft="302.679482916736,120.449337870417" />
+        <NodeLayout
+          Size="194.4,41.6"
+          Id="Package\load data into Shipper Fact\STG Shipper Info Source"
+          TopLeft="297.166651922796,46.066666282581" />
+        <NodeLayout
+          Size="172,41.6"
+          Id="Package\load data into Shipper Fact\Shipper Key Lookup"
+          TopLeft="315.499995016389,288.033330563307" />
+        <NodeLayout
+          Size="175.2,41.6"
+          Id="Package\load data into Shipper Fact\Location Key Lookup"
+          TopLeft="306.333328949908,192.897872817877" />
+        <EdgeLayout
+          Id="Package\load data into Shipper Fact.Paths[OLE DB Source Output]"
+          TopLeft="394.323067419766,87.666666282581">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,32.7826715878355"
+              Start="0,0"
+              End="0,25.2826715878355">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.2826715878355" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\load data into Shipper Fact.Paths[Derived Column Output]"
+          TopLeft="394.106405933322,162.049337870417">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,30.84853494746"
+              Start="0,0"
+              End="0,23.34853494746">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,23.34853494746" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="176,41.6"
+          Id="Package\load data into Shipper Fact\load into fact Shipper"
+          TopLeft="554.166636388336,459.333330139187" />
+        <EdgeLayout
+          Id="Package\load data into Shipper Fact.Paths[Lookup Match Output]"
+          TopLeft="397.716661983148,234.497872817876">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,53.5354577454303"
+              Start="0,0"
+              End="0,46.0354577454303">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,46.0354577454303" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-48.19138671875,17.2130413727151,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="152.8,41.6"
+          Id="Package\load data into Shipper Fact\Derived Column"
+          TopLeft="310.499984974663,363.09999772191" />
+        <EdgeLayout
+          Id="Package\load data into Shipper Fact.Paths[Lookup Match Output1]"
+          TopLeft="401.499995016389,329.633330563307">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="-14.6000100417259,33.4666671586037"
+              Start="0,0"
+              End="-14.6000100417259,25.9666671586037">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,12.7333335793018" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,12.7333335793018"
+                    Point2="0,16.7333335793018"
+                    Point3="-4,16.7333335793018" />
+                  <mssgle:LineSegment
+                    End="-10.6000100417259,16.7333335793018" />
+                  <mssgle:CubicBezierSegment
+                    Point1="-10.6000100417259,16.7333335793018"
+                    Point2="-14.6000100417259,16.7333335793018"
+                    Point3="-14.6000100417259,20.7333335793018" />
+                  <mssgle:LineSegment
+                    End="-14.6000100417259,25.9666671586037" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-55.4913917396129,21.7333335793018,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="157.6,41.6"
+          Id="Package\load data into Shipper Fact\Date Key Lookup"
+          TopLeft="329.166648681794,444.599996908307" />
+        <EdgeLayout
+          Id="Package\load data into Shipper Fact.Paths[Derived Column Output1]"
+          TopLeft="386.899984974663,404.699997721911">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="21.0666637071306,39.8999991863967"
+              Start="0,0"
+              End="21.0666637071306,32.3999991863967">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,15.9499995931983" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,15.9499995931983"
+                    Point2="0,19.9499995931983"
+                    Point3="4,19.9499995931983" />
+                  <mssgle:LineSegment
+                    End="17.0666637071306,19.9499995931983" />
+                  <mssgle:CubicBezierSegment
+                    Point1="17.0666637071306,19.9499995931983"
+                    Point2="21.0666637071306,19.9499995931983"
+                    Point3="21.0666637071306,23.9499995931983" />
+                  <mssgle:LineSegment
+                    End="21.0666637071306,32.3999991863967" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\load data into Shipper Fact.Paths[Lookup Match Output2]"
+          TopLeft="486.766648681794,465.399996908307">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="67.3999877065428,14.7333332308795"
+              Start="0,0"
+              End="59.8999877065428,14.7333332308795">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="29.6999938532714,0" />
+                  <mssgle:CubicBezierSegment
+                    Point1="29.6999938532714,0"
+                    Point2="33.6999938532714,0"
+                    Point3="33.6999938532714,4" />
+                  <mssgle:LineSegment
+                    End="33.6999938532714,10.7333332308795" />
+                  <mssgle:CubicBezierSegment
+                    Point1="33.6999938532714,10.7333332308795"
+                    Point2="33.6999938532714,14.7333332308795"
+                    Point3="37.6999938532714,14.7333332308795" />
+                  <mssgle:LineSegment
+                    End="59.8999877065428,14.7333332308795" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <mssgm:EdgeLabel
+              BoundingBox="-14.4913928654786,-17.609375,96.3827734375,11.609375"
+              RelativePosition="Any" />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into Shipper Fact\STG Shipper Info Source">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into Shipper Fact\Shipper Key Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into Shipper Fact\load into fact Shipper">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into Shipper Fact\Date Key Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string">[DWH].[D_Date]</Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into Shipper Fact\Location Key Lookup">
+    <Properties>
+      <Property>
+        <Name>OverwriteParamsSQLProp</Name>
+        <Value
+          type="q2:string">false</Value>
+      </Property>
+      <Property>
+        <Name>UsedTableName</Name>
+        <Value
+          type="q3:string"></Value>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q4:string">0</Value>
+      </Property>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <TaskHost
+    design-time-name="Package\load data into STG Shipper Info">
+    <LayoutInfo>
+      <GraphLayout
+        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        <NodeLayout
+          Size="180.8,41.6"
+          Id="Package\load data into STG Shipper Info\Prepare new Columns"
+          TopLeft="305.499985247851,247.166665901277" />
+        <NodeLayout
+          Size="180.8,41.6"
+          Id="Package\load data into STG Shipper Info\To get Shipment Time"
+          TopLeft="289.666656057868,73.8333334840006" />
+        <NodeLayout
+          Size="204,41.6"
+          Id="Package\load data into STG Shipper Info\Load into STG Shipper Info"
+          TopLeft="298.833323862818,396.099997979998" />
+        <NodeLayout
+          Size="156,41.6"
+          Id="Package\load data into STG Shipper Info\Data Conversion"
+          TopLeft="325.499995231628,314.499995395541" />
+        <NodeLayout
+          Size="216,41.6"
+          Id="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders"
+          TopLeft="268.833320584563,7.7666668595208" />
+        <NodeLayout
+          Size="126.4,41.6"
+          Id="Package\load data into STG Shipper Info\Aggregate"
+          TopLeft="314.666653052801,153.033332724637" />
+        <EdgeLayout
+          Id="Package\load data into STG Shipper Info.Paths[OLE DB Source Output]"
+          TopLeft="378.449988321216,49.3666668595208">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,24.4666666244798"
+              Start="0,0"
+              End="0,16.9666666244798">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,16.9666666244798" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\load data into STG Shipper Info.Paths[Derived Column Output1]"
+          TopLeft="399.69999023974,288.766665901277">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,25.7333294942642"
+              Start="0,0"
+              End="0,18.2333294942642">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,18.2333294942642" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\load data into STG Shipper Info.Paths[Derived Column Output]"
+          TopLeft="378.966654555335,115.433333484001">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,37.5999992406368"
+              Start="0,0"
+              End="0,30.0999992406368">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,30.0999992406368" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\load data into STG Shipper Info.Paths[Data Conversion Output]"
+          TopLeft="402.166659547223,356.099995395541">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,40.0000025844568"
+              Start="0,0"
+              End="0,32.5000025844568">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,32.5000025844568" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <EdgeLayout
+          Id="Package\load data into STG Shipper Info.Paths[Aggregate Output 1]"
+          TopLeft="377.866653052801,194.633332724637">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="18.03333219505,52.53333317664"
+              Start="0,0"
+              End="18.03333219505,45.03333317664">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,22.26666658832" />
+                  <mssgle:CubicBezierSegment
+                    Point1="0,22.26666658832"
+                    Point2="0,26.26666658832"
+                    Point3="4,26.26666658832" />
+                  <mssgle:LineSegment
+                    End="14.03333219505,26.26666658832" />
+                  <mssgle:CubicBezierSegment
+                    Point1="14.03333219505,26.26666658832"
+                    Point2="18.03333219505,26.26666658832"
+                    Point3="18.03333219505,30.26666658832" />
+                  <mssgle:LineSegment
+                    End="18.03333219505,45.03333317664" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+      </GraphLayout>
+    </LayoutInfo>
+  </TaskHost>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into STG Shipper Info\Load into STG Shipper Info">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+  <PipelineComponentMetadata
+    design-time-name="Package\load data into STG Shipper Info\Northwind DB Sourrce Orders">
+    <Properties>
+      <Property>
+        <Name>DataSourceViewID</Name>
+      </Property>
+      <Property>
+        <Name>TableInfoObjectType</Name>
+        <Value
+          type="q2:string">Table</Value>
+      </Property>
+    </Properties>
+  </PipelineComponentMetadata>
+</Objects>]]></DTS:DesignTimeProperties>
+</DTS:Executable>
